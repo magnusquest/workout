@@ -8,8 +8,8 @@ TWEAKS = {
   },
 }
 
-result = run_flow_from_json(flow="Ask AI.json",
+result = run_flow_from_json(flow="AskAI.json",
                             input_value="message",
                             session_id="", # provide a session id if you want to use session state
-                            fallback_to_env_vars=True, # False by default
+                            fallback_to_env_vars=False, # False by default
                             tweaks=TWEAKS)
