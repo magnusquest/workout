@@ -8,3 +8,9 @@ dependencies = [
     "langflow>=1.0.19.post2",
     "python-dotenv>=1.0.1",
 ]
+
+[project.scripts]
+main = "main:main"
+
+[tool.uv]
+package = true
