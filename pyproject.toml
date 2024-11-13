@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-main = "main:main"
+main = "ai:main"
 
 [tool.uv]
 package = true
