@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime as dt
 from db import personal_data_collection, notes_collection
 
 def update_personal_info(profile, update_type, **kwargs):
@@ -14,7 +14,7 @@ def update_personal_info(profile, update_type, **kwargs):
     return profile
 
 def add_note(note, profile_id):
-    new_note = {"user_id": profile_id, "text": note, "$vectorize": note, "metadata": {"injested": datetime.now()}}
+    new_note = {"user_id": profile_id, "text": note, "$vectorize": note, "metadata": {"injested": dt.now()}}
     result = notes_collection.insert_one(new_note)
     new_note["_id"] = result.inserted_id
     return new_note

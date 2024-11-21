@@ -1,12 +1,13 @@
 package = "workout"
 import streamlit as st
+import copy as cp
 from profiles import create_profile, get_notes, get_profile
 from form_submit import update_personal_info, add_note, delete_note
-from ai import get_macros, ask_ai
+from ai import get_macros, ask_ai, dict_to_string
 
 st.title('Personal Fitness Tool')
 
-@st.fragment
+@st.fragment()
 def personal_data_form():
     with st.form("personal_data_form"):
         st.header = "Personal Data"
@@ -50,7 +51,7 @@ def goals_form():
             else:
                 st.warning("Please select at least one goal")
 
-@st.fragment
+@st.fragment()
 def macros():
     profile = st.session_state.profile
     nutrition = st.container(border=True)
@@ -76,7 +77,39 @@ def macros():
                 st.session_state.profile = update_personal_info(profile, "nutrition", calories=calories, protein=protein, fat=fat, carbs=carbs)
                 st.success("Macros submitted")
 
+@st.fragment()
+def notes_form():
+    st.subheader("Notes: ")
 
+    notes = st.session_state.get("notes", [])
+    for i, note in enumerate(notes):
+        cols = st.columns([5, 1])
+        with cols[0]:
+            st.text(note.get("text"))
+        with cols[1]:
+            if st.button("Delete", key=i):
+                delete_note(note.get("_id"))
+                notes.pop(i)
+                st.session_state.notes = notes
+                st.rerun()
+    
+    new_note = st.text_input("Add a new note: ")
+    if st.button("Add Note"):
+        if new_note:
+            note = add_note(new_note, st.session_state.profile_id)
+            st.session_state.notes.append(note)
+            st.rerun()
+
+@st.fragment()
+def ask_ai_form():
+    st.subheader("Ask AI")
+    question = st.text_input("Ask AI Question")
+    if st.button("Ask"):
+        if question:
+            with st.spinner("Processing..."):
+                response = ask_ai(st.session_state.profile, question)
+                st.write(response)
+                
 def forms():
     if "profile" not in st.session_state:
         profile_id = 1
@@ -88,14 +121,13 @@ def forms():
         st.session_state.profile_id = profile_id
 
     if "notes" not in st.session_state:
-        notes = get_notes(st.session_state.profile_id)
-        st.session_state.notes = notes
+        st.session_state.notes = get_notes(st.session_state.profile_id)
 
     personal_data_form()
     goals_form()
     macros()
-
-
+    notes_form()
+    ask_ai_form()
 
 if __name__ == "__main__":
     forms()

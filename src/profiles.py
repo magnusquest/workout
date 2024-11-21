@@ -29,4 +29,4 @@ def get_profile(_id):
     return personal_data_collection.find_one({"_id": {"$eq": _id}})
 
 def get_notes(_id):
-    return notes_collection.find({"user_id": {"$eq": _id}})
+    return list(notes_collection.find({"user_id": {"$eq": _id}}))
